@@ -12,12 +12,20 @@ export default function account() {
     router.push("GetStarted"); // Navigate to the tabs screen
     Alert.alert("Logged Out", "You can login later!");
   };
+  const onboarding = () => {
+    // signOut();
+    router.push("Onboarding"); // Navigate to the tabs screen
+    // Alert.alert("Logged Out", "You can login later!");
+  };
 
   return (
     <View>
       <Text>account</Text>
       <TouchableOpacity onPress={logout} style={styles.logoutButton}>
         <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onboarding} style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Onboarding</Text>
       </TouchableOpacity>
 
       <View

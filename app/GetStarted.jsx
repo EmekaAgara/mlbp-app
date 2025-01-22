@@ -44,10 +44,13 @@ export default function GetStarted() {
 
         <View style={styles.textContainer}>
           <Text style={styles.title}>
-            <Text style={styles.title}>Product & Service Providers on</Text>
+            <Text style={styles.title}>Latest Major League Baseball</Text>
             <Text style={styles.primaryText}> MLBP</Text>
           </Text>
-          <Text style={styles.subText}>MLB aPP PLACEHOLDERR</Text>
+          <Text style={styles.subText}>
+            Get all the Latest Major League Baseball highlights, prospective
+            players, teams and more.
+          </Text>
         </View>
 
         <TouchableOpacity onPress={handlePress} style={styles.button}>
@@ -82,8 +85,8 @@ const styles = StyleSheet.create({
     paddingBottom: "5",
   },
   logo: {
-    width: 50,
-    height: 50,
+    width: 70,
+    height: 70,
     borderRadius: 5,
     marginTop: "10%",
     marginBottom: "120%",

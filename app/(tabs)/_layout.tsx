@@ -38,16 +38,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="services"
         options={{
-          tabBarLabel: "Services",
+          tabBarLabel: "Discover",
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="tools" size={20} color={color} />
+            <MaterialIcons name="leaderboard" size={24} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="post"
         options={{
-          tabBarLabel: "Post",
+          tabBarLabel: "Live",
 
           tabBarIcon: ({ color }) => (
             <Ionicons name="add-circle" size={26} color={color} />
@@ -57,9 +57,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="marketplace"
         options={{
-          tabBarLabel: "Marketplace",
+          tabBarLabel: "Highlights",
           tabBarIcon: ({ color }) => (
-            <FontAwesome6 name="shop" size={20} color={color} />
+            <MaterialIcons name="newspaper" size={24} color={color} />
           ),
         }}
       />

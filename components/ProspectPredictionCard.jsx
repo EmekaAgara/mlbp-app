@@ -9,8 +9,14 @@ export default function ProspectPredictionCard({ player }) {
         <View style={styles.info}>
           <Text style={styles.name}>{player.fullName}</Text>
           <Text style={styles.team}>Team: {player.teamName}</Text>
+          <Text style={styles.position}>
+            Position: {player.primaryPosition?.name || "N/A"}
+          </Text>
           <Text style={styles.stats}>Batting Avg: {player.battingAverage}</Text>
-          <Text style={styles.rank}>Rank: {player.prospectRank}</Text>
+          <Text style={styles.age}>
+            Age: {player.currentAge}, Country: {player.birthCountry}
+          </Text>
+          <Text style={styles.rank}>Rank: {player.rank}</Text>
         </View>
       </Link>
     </TouchableOpacity>
@@ -44,12 +50,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
   },
+  position: {
+    fontSize: 14,
+    color: "#444",
+  },
   stats: {
     fontSize: 14,
     color: "#777",
   },
-  rank: {
+  age: {
     fontSize: 14,
     color: "#999",
+  },
+  rank: {
+    fontSize: 14,
+    color: "#333",
   },
 });

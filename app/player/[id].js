@@ -5,7 +5,6 @@ import { fetchPlayerDetails } from "../../services/api";
 
 export default function PlayerDetails() {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
   const [player, setPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,8 +33,26 @@ export default function PlayerDetails() {
       <Image source={{ uri: player.headshotUrl }} style={styles.image} />
       <Text style={styles.name}>{player.fullName}</Text>
       <Text style={styles.team}>Team: {player.teamName}</Text>
-      <Text style={styles.stats}>Batting Avg: {player.battingAverage}</Text>
-      <Text style={styles.rank}>Prospect Rank: {player.prospectRank}</Text>
+      <Text style={styles.info}>
+        Age: {player.currentAge}, Country: {player.birthCountry}
+      </Text>
+      <Text style={styles.info}>
+        Height: {player.height}, Weight: {player.weight} lbs
+      </Text>
+      <Text style={styles.info}>
+        Position: {player.primaryPosition?.name || "N/A"} (
+        {player.primaryPosition?.abbreviation || "N/A"})
+      </Text>
+      <Text style={styles.info}>
+        Bat Side: {player.batSide?.description || "N/A"}
+      </Text>
+      <Text style={styles.info}>
+        Pitch Hand: {player.pitchHand?.description || "N/A"}
+      </Text>
+      <Text style={styles.stats}>
+        Strike Zone: {player.strikeZoneTop} - {player.strikeZoneBottom}
+      </Text>
+      <Text style={styles.rank}>Rank: {player.rank}</Text>
       <Text style={styles.prediction}>Prediction: {player.prediction}</Text>
     </ScrollView>
   );
@@ -51,7 +68,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     marginBottom: 10,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   name: {
     fontSize: 22,
@@ -60,6 +77,11 @@ const styles = StyleSheet.create({
   team: {
     fontSize: 18,
     color: "#555",
+  },
+  info: {
+    fontSize: 16,
+    color: "#444",
+    marginVertical: 5,
   },
   stats: {
     fontSize: 16,

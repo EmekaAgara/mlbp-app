@@ -81,31 +81,31 @@ export async function predictPlayerPotential(player) {
 // };
 
 // Fetch players for a specific season
-export const fetchSeasonPlayers = async (season) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/sports/1/players?season=${season}`
-    );
-    console.log("API Response:", response.data); // Debug response
+// export const fetchSeasonPlayers = async (season) => {
+//   try {
+//     const response = await axios.get(
+//       `${BASE_URL}/sports/1/players?season=${season}`
+//     );
+//     console.log("API Response:", response.data); // Debug response
 
-    if (!response.data.people) {
-      console.warn("No players found in response!");
-      return [];
-    }
+//     if (!response.data.people) {
+//       console.warn("No players found in response!");
+//       return [];
+//     }
 
-    return response.data.people.map((player) => ({
-      id: player.id,
-      fullName: player.fullName || "N/A",
-      headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
-      teamName: player.currentTeam?.name || "Unknown Team",
-      battingAverage: player.stats?.battingAverage || "N/A",
-      prospectRank: player.stats?.prospectRank || 999, // Default if no rank
-    }));
-  } catch (error) {
-    console.error("Error fetching season players:", error);
-    return [];
-  }
-};
+//     return response.data.people.map((player) => ({
+//       id: player.id,
+//       fullName: player.fullName || "N/A",
+//       headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
+//       teamName: player.currentTeam?.name || "Unknown Team",
+//       battingAverage: player.stats?.battingAverage || "N/A",
+//       prospectRank: player.stats?.prospectRank || 999, // Default if no rank
+//     }));
+//   } catch (error) {
+//     console.error("Error fetching season players:", error);
+//     return [];
+//   }
+// };
 
 // Fetch individual player details
 // export const fetchPlayerDetails = async (playerId) => {
@@ -114,11 +114,11 @@ export const fetchSeasonPlayers = async (season) => {
 // };
 
 // Fetch prospect prediction using Google Gemini
-export const fetchPlayerProspectPrediction = async (player) => {
-  // Placeholder for Google Gemini API integration
-  const prediction = `Projected to be a key player based on historical comparisons and current performance.`;
-  return prediction;
-};
+// export const fetchPlayerProspectPrediction = async (player) => {
+//   // Placeholder for Google Gemini API integration
+//   const prediction = `Projected to be a key player based on historical comparisons and current performance.`;
+//   return prediction;
+// };
 
 // export const fetchSeasonPlayers = async (season) => {
 //   const response = await fetch(
@@ -135,21 +135,21 @@ export const fetchPlayerProspectPrediction = async (player) => {
 //   }));
 // };
 
-export const fetchPlayerDetails = async (id) => {
-  const response = await fetch(`https://statsapi.mlb.com/api/v1/people/${id}`);
-  const data = await response.json();
-  const player = data.people[0];
-  const prediction = await fetchPlayerProspectPrediction(player);
-  return {
-    id: player.id,
-    fullName: player.fullName,
-    teamName: player.currentTeam?.name || "Unknown",
-    battingAverage: player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A",
-    prospectRank: Math.floor(Math.random() * 100) + 1, // Mocked prospect rank
-    prediction,
-    headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
-  };
-};
+// export const fetchPlayerDetails = async (id) => {
+//   const response = await fetch(`https://statsapi.mlb.com/api/v1/people/${id}`);
+//   const data = await response.json();
+//   const player = data.people[0];
+//   const prediction = await fetchPlayerProspectPrediction(player);
+//   return {
+//     id: player.id,
+//     fullName: player.fullName,
+//     teamName: player.currentTeam?.name || "Unknown",
+//     battingAverage: player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A",
+//     prospectRank: Math.floor(Math.random() * 100) + 1, // Mocked prospect rank
+//     prediction,
+//     headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
+//   };
+// };
 
 // // Fetch prospect prediction using Google Gemini
 // export const fetchPlayerProspectPrediction = async (player) => {
@@ -157,3 +157,148 @@ export const fetchPlayerDetails = async (id) => {
 //   const prediction = `Projected to be a key player based on historical comparisons and current performance.`;
 //   return prediction;
 // };
+
+// export const fetchSeasonPlayers = async (season) => {
+//   const response = await fetch(
+//     `https://statsapi.mlb.com/api/v1/sports/1/players?season=${season}`
+//   );
+//   const data = await response.json();
+
+//   // Calculate player rank based on strike zone and other metrics
+//   return data.people
+//     .map((player) => {
+//       const strikeZone =
+//         player.strikeZoneTop && player.strikeZoneBottom
+//           ? player.strikeZoneTop - player.strikeZoneBottom
+//           : 0;
+
+//       const performanceScore =
+//         (player.stats?.[0]?.splits?.[0]?.stat?.avg || 0) * 1000 +
+//         (strikeZone || 0) * 10;
+
+//       return {
+//         id: player.id,
+//         fullName: player.fullName,
+//         teamName: player.currentTeam?.name || "Unknown",
+//         battingAverage: player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A",
+//         strikeZoneTop: player.strikeZoneTop || "N/A",
+//         strikeZoneBottom: player.strikeZoneBottom || "N/A",
+//         rank: Math.round(performanceScore),
+//         headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
+//       };
+//     })
+//     .sort((a, b) => b.rank - a.rank); // Sort by rank descending
+// };
+
+// export const fetchPlayerDetails = async (id) => {
+//   const response = await fetch(`https://statsapi.mlb.com/api/v1/people/${id}`);
+//   const data = await response.json();
+//   const player = data.people[0];
+
+//   const strikeZone =
+//     player.strikeZoneTop && player.strikeZoneBottom
+//       ? player.strikeZoneTop - player.strikeZoneBottom
+//       : 0;
+
+//   const performanceScore =
+//     (player.stats?.[0]?.splits?.[0]?.stat?.avg || 0) * 1000 +
+//     (strikeZone || 0) * 10;
+
+//   const prediction = await fetchPlayerProspectPrediction(player);
+
+//   return {
+//     id: player.id,
+//     fullName: player.fullName,
+//     teamName: player.currentTeam?.name || "Unknown",
+//     battingAverage: player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A",
+//     strikeZoneTop: player.strikeZoneTop || "N/A",
+//     strikeZoneBottom: player.strikeZoneBottom || "N/A",
+//     rank: Math.round(performanceScore),
+//     prediction,
+//     headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
+//   };
+// };
+
+export const fetchSeasonPlayers = async (season) => {
+  const response = await fetch(
+    `https://statsapi.mlb.com/api/v1/sports/1/players?season=${season}`
+  );
+  const data = await response.json();
+
+  return data.people
+    .map((player) => {
+      const strikeZone =
+        player.strikeZoneTop && player.strikeZoneBottom
+          ? player.strikeZoneTop - player.strikeZoneBottom
+          : 0;
+
+      const performanceScore =
+        (player.stats?.[0]?.splits?.[0]?.stat?.avg || 0) * 1000 +
+        (strikeZone || 0) * 10;
+
+      return {
+        id: player.id,
+        fullName: player.fullName,
+        teamName: player.currentTeam?.name || "Unknown",
+        battingAverage: player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A",
+        strikeZoneTop: player.strikeZoneTop || "N/A",
+        strikeZoneBottom: player.strikeZoneBottom || "N/A",
+        rank: Math.round(performanceScore),
+        headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
+        currentAge: player.currentAge,
+        birthCountry: player.birthCountry,
+        height: player.height,
+        weight: player.weight,
+        primaryPosition: player.primaryPosition,
+        batSide: player.batSide,
+        pitchHand: player.pitchHand,
+      };
+    })
+    .sort((a, b) => b.rank - a.rank); // Sort by rank descending
+};
+
+export const fetchPlayerDetails = async (id) => {
+  const response = await fetch(`https://statsapi.mlb.com/api/v1/people/${id}`);
+  const data = await response.json();
+  const player = data.people[0];
+
+  const strikeZone =
+    player.strikeZoneTop && player.strikeZoneBottom
+      ? player.strikeZoneTop - player.strikeZoneBottom
+      : 0;
+
+  const performanceScore =
+    (player.stats?.[0]?.splits?.[0]?.stat?.avg || 0) * 1000 +
+    (strikeZone || 0) * 10;
+
+  const prediction = await fetchPlayerProspectPrediction(player);
+
+  return {
+    id: player.id,
+    fullName: player.fullName,
+    teamName: player.currentTeam?.name || "Unknown",
+    battingAverage: player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A",
+    strikeZoneTop: player.strikeZoneTop || "N/A",
+    strikeZoneBottom: player.strikeZoneBottom || "N/A",
+    rank: Math.round(performanceScore),
+    prediction,
+    headshotUrl: `https://securea.mlb.com/mlb/images/players/head_shot/${player.id}.jpg`,
+    currentAge: player.currentAge,
+    birthCountry: player.birthCountry,
+    height: player.height,
+    weight: player.weight,
+    primaryPosition: player.primaryPosition,
+    batSide: player.batSide,
+    pitchHand: player.pitchHand,
+  };
+};
+
+export const fetchPlayerProspectPrediction = async (player) => {
+  // Placeholder for Google Gemini API integration
+  const prediction = `Based on a strike zone of ${
+    player.strikeZoneTop - player.strikeZoneBottom
+  } and a batting average of ${
+    player.stats?.[0]?.splits?.[0]?.stat?.avg || "N/A"
+  }, this player is projected to make a significant impact in the MLB.`;
+  return prediction;
+};

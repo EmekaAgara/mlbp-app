@@ -1,22 +1,22 @@
-import { View, Text, StyleSheet, Image, Button, WebView } from "react-native";
+import { View, Text, StyleSheet, Image, Button } from "react-native";
 import { useSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// News API to get details by URL
+// News API for fetching article details
 const NEWS_API_KEY = process.env.EXPO_PUBLIC_NEWS_API_KEY;
 const NEWS_API_URL = `https://newsapi.org/v2/everything?apiKey=${NEWS_API_KEY}&url=`;
 
 export default function HighlightDetails() {
-  const { id } = useSearchParams(); // This will get the video ID or news URL
+  const { id } = useSearchParams();
   const [highlight, setHighlight] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHighlightDetails = async () => {
       try {
-        // Check if it's a YouTube video (ID is a video ID)
-        if (id.includes("youtube")) {
+        // Check if it's a YouTube video (ID is a videoId)
+        if (id.length === 11) {
           setHighlight({ type: "video", videoId: id });
         } else {
           // Fetch article details from News API
@@ -38,13 +38,8 @@ export default function HighlightDetails() {
     fetchHighlightDetails();
   }, [id]);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (!highlight) {
-    return <Text>Highlight not found.</Text>;
-  }
+  if (loading) return <Text>Loading...</Text>;
+  if (!highlight) return <Text>Highlight not found.</Text>;
 
   return (
     <View style={styles.container}>
@@ -56,7 +51,7 @@ export default function HighlightDetails() {
             style={styles.image}
           />
           <Text style={styles.description}>
-            {highlight.article.description}
+            {highlight.article.description || "No description available."}
           </Text>
           <Button
             title="Read Full Article"
@@ -64,11 +59,17 @@ export default function HighlightDetails() {
           />
         </>
       ) : (
-        <WebView
-          source={{
-            uri: `https://www.youtube.com/watch?v=${highlight.videoId}`,
-          }}
-        />
+        <View style={styles.videoContainer}>
+          <Text style={styles.title}>YouTube Video</Text>
+          <iframe
+            width="100%"
+            height="315"
+            src={`https://www.youtube.com/embed/${highlight.videoId}`}
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          ></iframe>
+        </View>
       )}
     </View>
   );
@@ -76,7 +77,8 @@ export default function HighlightDetails() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
-  title: { fontSize: 28, fontWeight: "bold" },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
   image: { width: "100%", height: 200, marginBottom: 16 },
   description: { fontSize: 16, marginBottom: 16 },
+  videoContainer: { flex: 1, alignItems: "center" },
 });

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ScrollView,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
@@ -26,7 +27,7 @@ export default function HighlightsPage() {
   useEffect(() => {
     const fetchNewsAndVideos = async () => {
       try {
-        // Fetch MLB team-related sports news and blog posts
+        // Fetch baseball-related news
         const newsResponse = await axios.get(NEWS_API_URL);
         setNews(newsResponse.data.articles || []);
 
@@ -48,65 +49,106 @@ export default function HighlightsPage() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Baseball Highlights, News & Videos</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Baseball Highlights</Text>
 
+      {/* Display videos horizontally */}
+      <Text style={styles.sectionTitle}>Video Highlights</Text>
+      <FlatList
+        data={videos}
+        horizontal
+        keyExtractor={(item) => item.id.videoId}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => router.push(`/highlights/${item.id.videoId}`)}
+          >
+            <View style={styles.videoCard}>
+              <Image
+                source={{ uri: item.snippet.thumbnails.medium.url }}
+                style={styles.videoThumbnail}
+              />
+              <Text style={styles.videoTitle}>{item.snippet.title}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+
+      {/* Display news articles vertically */}
       <Text style={styles.sectionTitle}>Latest Baseball News</Text>
       <FlatList
         data={news}
         keyExtractor={(item) => item.url}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => router.push(`/highlights/${item.source.id}`)}
+            onPress={() =>
+              router.push(`/highlights/${encodeURIComponent(item.url)}`)
+            }
           >
-            <View style={styles.card}>
+            <View style={styles.newsCard}>
               <Image
                 source={{
                   uri: item.urlToImage || "https://via.placeholder.com/150",
                 }}
-                style={styles.thumbnail}
+                style={styles.newsThumbnail}
               />
-              <Text style={styles.titleText}>{item.title}</Text>
+              <View style={styles.newsContent}>
+                <Text style={styles.newsTitle}>{item.title}</Text>
+                <Text style={styles.newsDescription}>
+                  {item.description || "No description available."}
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}
       />
-
-      <Text style={styles.sectionTitle}>
-        Baseball Video Highlights{YOUTUBE_API_KEY}
-      </Text>
-      <FlatList
-        data={videos}
-        keyExtractor={(item) => item.id.videoId}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/highlights/${item.id.videoId}`)}
-          >
-            <View style={styles.card}>
-              <Image
-                source={{ uri: item.snippet.thumbnails.medium.url }}
-                style={styles.thumbnail}
-              />
-              <Text style={styles.titleText}>{item.snippet.title}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
-  title: { fontSize: 28, marginBottom: 16 },
-  sectionTitle: { fontSize: 22, marginTop: 24 },
-  card: {
+  title: { fontSize: 28, fontWeight: "bold", marginBottom: 16 },
+  sectionTitle: { fontSize: 22, fontWeight: "bold", marginTop: 24 },
+  videoCard: {
+    width: 200,
+    marginRight: 16,
+    alignItems: "center",
+  },
+  videoThumbnail: {
+    width: 200,
+    height: 120,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  videoTitle: {
+    fontSize: 14,
+    textAlign: "center",
+  },
+  newsCard: {
     flexDirection: "row",
     marginBottom: 16,
     padding: 10,
     backgroundColor: "#f9f9f9",
     borderRadius: 8,
   },
-  thumbnail: { width: 100, height: 100, borderRadius: 8, marginRight: 12 },
-  titleText: { fontSize: 16, fontWeight: "bold", color: "#333" },
+  newsThumbnail: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  newsContent: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  newsTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 4,
+  },
+  newsDescription: {
+    fontSize: 14,
+    color: "#555",
+  },
 });

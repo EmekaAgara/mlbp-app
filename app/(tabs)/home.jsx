@@ -1,33 +1,21 @@
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
   FlatList,
-  Image,
-  Button,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import Header from "../../components/Home/Header";
 import axios from "axios";
-import { Link, router, useRouter } from "expo-router";
+import { WebView } from "react-native-webview";
+import { useRouter } from "expo-router";
 
-const home = () => {
-  const router = useRouter();
-
-  const prospects = () => {
-    // router.push("(tabs)/services"); // Navigate to the tabs screen
-    router.push("prospects"); // Navigate to the tabs screen
-  };
-  const highlights = () => {
-    router.push("highlights"); // Navigate to the tabs screen
-  };
-  const settings = () => {
-    router.push("(tabs)/account"); // Navigate to the tabs screen
-  };
-
+const Home = () => {
   const [schedule, setSchedule] = useState([]);
-  const season = 2025; // Update season dynamically if needed
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const season = 2025;
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -38,6 +26,8 @@ const home = () => {
         setSchedule(response.data.dates || []);
       } catch (error) {
         console.error("Error fetching schedule:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -46,52 +36,78 @@ const home = () => {
 
   const renderGame = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.title}>{item.date}</Text>
+      <Text style={styles.date}>{item.date}</Text>
       {item.games.map((game, index) => (
-        <Text key={index}>
-          {game.teams.away.team.name} vs {game.teams.home.team.name}
-        </Text>
+        <TouchableOpacity
+          key={index}
+          style={styles.gameContainer}
+          onPress={() =>
+            router.push({
+              pathname: "/match-details",
+              params: { game: JSON.stringify(game) },
+            })
+          }
+        >
+          <View style={styles.teamContainer}>
+            <WebView
+              source={{
+                uri: `https://www.mlbstatic.com/team-logos/${game.teams.away.team.id}.svg`,
+              }}
+              style={styles.logo}
+            />
+            <Text style={styles.teamName}>{game.teams.away.team.name}</Text>
+          </View>
+          <Text style={styles.vsText}>vs</Text>
+          <View style={styles.teamContainer}>
+            <WebView
+              source={{
+                uri: `https://www.mlbstatic.com/team-logos/${game.teams.home.team.id}.svg`,
+              }}
+              style={styles.logo}
+            />
+            <Text style={styles.teamName}>{game.teams.home.team.name}</Text>
+          </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
 
   return (
-    <View>
-      <Header />
-
-      <TouchableOpacity onPress={prospects} style={styles.logoutButton}>
-        <Text style={styles.logoutText}>prospect prrediction</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={highlights} style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Personalized highlights</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={settings} style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Settings</Text>
-      </TouchableOpacity>
-      <View style={styles.container}>
-        <Text style={styles.heading}>Recent MLB Games</Text>
+    <View style={styles.container}>
+      <Text style={styles.heading}>Recent MLB Games</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#007BFF" />
+      ) : (
         <FlatList
           data={schedule}
           renderItem={renderGame}
           keyExtractor={(item, index) => index.toString()}
         />
-      </View>
+      )}
     </View>
   );
 };
 
-export default home;
+export default Home;
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
+  container: { flex: 1, backgroundColor: "#ffffff", padding: 20 },
   heading: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
-  card: { padding: 10, borderWidth: 1, marginBottom: 10, borderRadius: 5 },
-  title: { fontSize: 18, fontWeight: "bold" },
-  logoutButton: {
-    padding: 10,
-    backgroundColor: "red",
-    borderRadius: 5,
-    marginTop: 20,
+  card: {
+    backgroundColor: "#f9f9f9",
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8,
   },
-  logoutText: { color: "white", fontWeight: "bold" },
+  date: { fontSize: 16, fontWeight: "bold", marginBottom: 5 },
+  gameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  teamContainer: { alignItems: "center", flex: 1 },
+  logo: { width: 50, height: 50 },
+  teamName: { fontSize: 14, textAlign: "center", fontWeight: "600" },
+  vsText: { fontSize: 18, fontWeight: "bold", color: "#333" },
 });

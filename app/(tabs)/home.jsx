@@ -1,3 +1,4 @@
+// screens/Home.js
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -54,6 +55,7 @@ const Home = () => {
                 uri: `https://www.mlbstatic.com/team-logos/${game.teams.away.team.id}.svg`,
               }}
               style={styles.logo}
+              scrollEnabled={false}
             />
             <Text style={styles.teamName}>{game.teams.away.team.name}</Text>
           </View>
@@ -64,6 +66,7 @@ const Home = () => {
                 uri: `https://www.mlbstatic.com/team-logos/${game.teams.home.team.id}.svg`,
               }}
               style={styles.logo}
+              scrollEnabled={false}
             />
             <Text style={styles.teamName}>{game.teams.home.team.name}</Text>
           </View>

@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { WebView } from "react-native-webview";
+import { SvgUri } from "react-native-svg";
+import { Ionicons } from "@expo/vector-icons";
 import runChat from "../../services/gemini";
 
 const MatchDetails = () => {
@@ -65,100 +66,151 @@ const MatchDetails = () => {
   }, [game]);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>
-        {parsedGame.teams.away.team.name} vs {parsedGame.teams.home.team.name}
-      </Text>
-
-      <View style={styles.teamContainer}>
-        <WebView
-          originWhitelist={["*"]}
-          source={{
-            uri: `https://www.mlbstatic.com/team-logos/${parsedGame.teams.away.team.id}.svg`,
-          }}
-          style={styles.logo}
-        />
-        <Text style={styles.teamName}>{parsedGame.teams.away.team.name}</Text>
-      </View>
-
-      <Text style={styles.vsText}>vs</Text>
-
-      <View style={styles.teamContainer}>
-        <WebView
-          originWhitelist={["*"]}
-          source={{
-            uri: `https://www.mlbstatic.com/team-logos/${parsedGame.teams.home.team.id}.svg`,
-          }}
-          style={styles.logo}
-        />
-        <Text style={styles.teamName}>{parsedGame.teams.home.team.name}</Text>
-      </View>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#007BFF" />
-      ) : (
-        <>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Historical Data:</Text>
-            <Text style={styles.sectionContent}>
-              {response.historical || "No historical data available."}
-            </Text>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Prediction:</Text>
-            <Text style={styles.sectionContent}>
-              {response.prediction || "No prediction available."}
-            </Text>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Insights:</Text>
-            <Text style={styles.sectionContent}>
-              {response.insights || "No insights available."}
-            </Text>
-          </View>
-        </>
-      )}
-
+    <View style={styles.container}>
+      {/* Back Button (Top) */}
       <TouchableOpacity
-        style={styles.backButton}
+        style={styles.backButtonTop}
         onPress={() => router.push("/")}
       >
-        <Text style={styles.backButtonText}>Back to Home</Text>
+        <Ionicons name="arrow-back-circle" size={35} color="#00BFFF" />
       </TouchableOpacity>
-    </ScrollView>
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.heading}>
+          {parsedGame.teams.away.team.name} vs {parsedGame.teams.home.team.name}
+        </Text>
+
+        {/* Away Team */}
+        <View style={styles.teamContainer}>
+          <SvgUri
+            uri={`https://www.mlbstatic.com/team-logos/${parsedGame.teams.away.team.id}.svg`}
+            width={100}
+            height={100}
+          />
+          <Text style={styles.teamName}>{parsedGame.teams.away.team.name}</Text>
+        </View>
+
+        <Text style={styles.vsText}>vs</Text>
+
+        {/* Home Team */}
+        <View style={styles.teamContainer}>
+          <SvgUri
+            uri={`https://www.mlbstatic.com/team-logos/${parsedGame.teams.home.team.id}.svg`}
+            width={100}
+            height={100}
+          />
+          <Text style={styles.teamName}>{parsedGame.teams.home.team.name}</Text>
+        </View>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#00BFFF" />
+        ) : (
+          <>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Historical Data:</Text>
+              <Text style={styles.sectionContent}>
+                {response.historical || "No historical data available."}
+              </Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Prediction:</Text>
+              <Text style={styles.sectionContent}>
+                {response.prediction || "No prediction available."}
+              </Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Insights:</Text>
+              <Text style={styles.sectionContent}>
+                {response.insights || "No insights available."}
+              </Text>
+            </View>
+          </>
+        )}
+
+        {/* Go Back Button (Bottom) */}
+        <TouchableOpacity
+          style={styles.bottomBackButton}
+          onPress={() => router.push("/")}
+        >
+          <Ionicons name="arrow-back" size={20} color="#ffffff" />
+          <Text style={styles.bottomBackText}>Go Back</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
   );
 };
 
 export default MatchDetails;
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#fff" },
+  container: {
+    flex: 1,
+    backgroundColor: "#121212",
+  },
+  backButtonTop: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 10,
+  },
+  scrollContainer: {
+    alignItems: "center",
+    paddingVertical: 20,
+  },
   heading: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#ffffff",
     textAlign: "center",
     marginBottom: 20,
   },
-  teamContainer: { alignItems: "center", marginBottom: 20 },
-  logo: { width: 100, height: 100 },
-  teamName: { fontSize: 18, fontWeight: "600", marginTop: 10 },
+  teamContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  teamName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#bbbbbb",
+    marginTop: 10,
+  },
   vsText: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#ffffff",
     textAlign: "center",
     marginVertical: 10,
   },
-  section: { marginTop: 20 },
-  sectionTitle: { fontSize: 18, fontWeight: "bold" },
-  sectionContent: { fontSize: 16, marginTop: 10 },
-  backButton: {
-    marginTop: 30,
+  section: {
+    backgroundColor: "#1e1e1e",
+    borderRadius: 10,
     padding: 15,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-    alignSelf: "center",
+    width: "90%",
+    marginVertical: 10,
   },
-  backButtonText: { color: "#fff", fontWeight: "bold", textAlign: "center" },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#ffffff",
+  },
+  sectionContent: {
+    fontSize: 16,
+    color: "#cccccc",
+    marginTop: 10,
+  },
+  bottomBackButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#00BFFF",
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  bottomBackText: {
+    color: "#ffffff",
+    fontSize: 16,
+    marginLeft: 5,
+  },
 });

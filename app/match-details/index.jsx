@@ -80,26 +80,31 @@ const MatchDetails = () => {
           {parsedGame.teams.away.team.name} vs {parsedGame.teams.home.team.name}
         </Text>
 
-        {/* Away Team */}
-        <View style={styles.teamContainer}>
-          <SvgUri
-            uri={`https://www.mlbstatic.com/team-logos/${parsedGame.teams.away.team.id}.svg`}
-            width={100}
-            height={100}
-          />
-          <Text style={styles.teamName}>{parsedGame.teams.away.team.name}</Text>
-        </View>
+        {/* Horizontal Team Logos */}
+        <View style={styles.teamsContainer}>
+          <View style={styles.team}>
+            <SvgUri
+              uri={`https://www.mlbstatic.com/team-logos/${parsedGame.teams.away.team.id}.svg`}
+              width={80}
+              height={80}
+            />
+            <Text style={styles.teamName}>
+              {parsedGame.teams.away.team.name}
+            </Text>
+          </View>
 
-        <Text style={styles.vsText}>vs</Text>
+          <Text style={styles.vsText}>VS</Text>
 
-        {/* Home Team */}
-        <View style={styles.teamContainer}>
-          <SvgUri
-            uri={`https://www.mlbstatic.com/team-logos/${parsedGame.teams.home.team.id}.svg`}
-            width={100}
-            height={100}
-          />
-          <Text style={styles.teamName}>{parsedGame.teams.home.team.name}</Text>
+          <View style={styles.team}>
+            <SvgUri
+              uri={`https://www.mlbstatic.com/team-logos/${parsedGame.teams.home.team.id}.svg`}
+              width={80}
+              height={80}
+            />
+            <Text style={styles.teamName}>
+              {parsedGame.teams.home.team.name}
+            </Text>
+          </View>
         </View>
 
         {loading ? (
@@ -161,27 +166,37 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
+    marginTop: 40,
     fontWeight: "bold",
     color: "#ffffff",
     textAlign: "center",
     marginBottom: 20,
   },
-  teamContainer: {
+  teamsContainer: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-around",
+    width: "90%",
+    backgroundColor: "#1e1e1e",
+    padding: 15,
+    borderRadius: 10,
     marginBottom: 20,
   },
+  team: {
+    alignItems: "center",
+  },
   teamName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     color: "#bbbbbb",
     marginTop: 10,
+    textAlign: "center",
   },
   vsText: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#ffffff",
-    textAlign: "center",
-    marginVertical: 10,
+    marginHorizontal: 10,
   },
   section: {
     backgroundColor: "#1e1e1e",

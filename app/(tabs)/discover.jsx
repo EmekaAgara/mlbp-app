@@ -55,7 +55,7 @@ export default function Discover() {
         <Text style={styles.subheading}>All Prospects</Text>
         {loading ? (
           <ActivityIndicator
-            size="large"
+            size="small"
             color="#007BFF"
             style={styles.loader}
           />
@@ -76,14 +76,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#121212",
-    paddingHorizontal: 12,
     paddingTop: 16,
   },
   staticSection: {
+    paddingHorizontal: 12,
     paddingBottom: 15, // Space between static & scrollable section
   },
   listContainer: {
     flex: 1, // Allows vertical scrolling
+    paddingHorizontal: 12,
   },
   heading: {
     fontSize: 24,
@@ -99,14 +100,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   searchInput: {
+    borderWidth: 0.3,
+    borderColor: "#666",
+    padding: 17,
+    borderRadius: 5,
+    marginBottom: 15,
+    color: "#fff",
     backgroundColor: "#1e1e1e",
-    borderRadius: 8,
-    padding: 12,
-    color: "#ffffff",
     fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#333",
-    marginBottom: 12,
   },
   loader: {
     justifyContent: "center",

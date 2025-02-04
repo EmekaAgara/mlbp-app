@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/Solvv-logo.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Solvv-logo.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.realagara.mlbpapp"
     },
     "web": {
       "bundler": "metro",
@@ -24,7 +25,6 @@
     },
     "plugins": [
       "expo-router",
-
       [
         "expo-splash-screen",
         {
@@ -37,6 +37,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "93562739-469e-4a7b-a0a0-0612d3cb3a58"
+      }
     }
   }
 }

@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    paddingTop: 30,
     backgroundColor: "#121212",
   },
   title: {
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   button: {
-    backgroundColor: "#4caf50",
+    backgroundColor: "#664DF3",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",

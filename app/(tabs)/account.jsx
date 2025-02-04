@@ -37,7 +37,7 @@ export default function Account() {
       </View>
 
       <TouchableOpacity onPress={goToOnboarding} style={styles.button}>
-        <Text style={styles.buttonText}>Go to Onboarding</Text>
+        <Text style={styles.buttonText}>My Preferences</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={logout} style={styles.logoutButton}>

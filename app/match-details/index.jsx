@@ -69,12 +69,12 @@ const MatchDetails = () => {
   return (
     <View style={styles.container}>
       {/* Back Button (Top) */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.backButtonTop}
         onPress={() => router.push("/(tabs)/home")}
       >
         <Ionicons name="arrow-back-circle" size={35} color="#664DF3" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.heading}>
@@ -138,7 +138,7 @@ const MatchDetails = () => {
         {/* Go Back Button (Bottom) */}
         <TouchableOpacity
           style={styles.bottomBackButton}
-          onPress={() => router.push("/")}
+          onPress={() => router.push("/(tabs)/home")}
         >
           {/* <Ionicons name="arrow-back" size={20} color="#ffffff" /> */}
           <Text style={styles.bottomBackText}>Go Back</Text>

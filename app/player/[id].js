@@ -71,12 +71,12 @@ export default function PlayerDetails() {
   return (
     <View style={styles.container}>
       {/* G Back Button (Top) */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.backButton}
         onPress={() => router.push("/(tabs)/home")}
       >
         <Ionicons name="arrow-back-circle" size={35} color="#664DF3" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -112,16 +112,17 @@ export default function PlayerDetails() {
             <Text style={styles.label}>Country:</Text> {player.birthCountry}
           </Text>
           <Text style={styles.info}>
-            <Text style={styles.label}>Height:</Text> {player.height}
+            <Text style={styles.label}>Height & Weight:</Text> {player.height} -{" "}
+            {player.weight} lbs
           </Text>
-          <Text style={styles.info}>
+          {/* <Text style={styles.info}>
             <Text style={styles.label}>Weight:</Text> {player.weight} lbs
-          </Text>
-          <Text style={styles.info}>
+          </Text> */}
+          {/* <Text style={styles.info}>
             <Text style={styles.label}>Position:</Text>{" "}
             {player.primaryPosition?.name || "N/A"} (
             {player.primaryPosition?.abbreviation || "N/A"})
-          </Text>
+          </Text> */}
           <Text style={styles.info}>
             <Text style={styles.label}>Bat Side:</Text>{" "}
             {player.batSide?.description || "N/A"}

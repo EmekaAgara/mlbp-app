@@ -1,315 +1,271 @@
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  FlatList,
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
   ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import WebView from "react-native-webview";
+import SvgUri from "react-native-svg-uri";
 
-const NEWS_API_KEY = process.env.EXPO_PUBLIC_NEWS_API_KEY;
-const YOUTUBE_API_KEY = process.env.EXPO_PUBLIC_YOUTUBE_API_KEY;
-
-const NEWS_API_URL = `https://newsapi.org/v2/everything?q=baseball&apiKey=${NEWS_API_KEY}`;
-const YOUTUBE_API_URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=baseball+highlights&key=${YOUTUBE_API_KEY}`;
-
-export default function highlights() {
-  const [news, setNews] = useState([]);
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [categories, setCategories] = useState([
-    "All",
-    "News",
-    "Videos",
-    "Highlights",
-    "MLB",
-  ]);
+const highlights = () => {
+  const [teams, setTeams] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [selectedTeams, setSelectedTeams] = useState([]);
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [highlights, setHighlights] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch MLB team-related sports news and blog posts
-        const newsResponse = await axios.get(NEWS_API_URL);
-        setNews(newsResponse.data.articles || []);
-
-        // Fetch baseball-specific YouTube video highlights
-        const videoResponse = await axios.get(YOUTUBE_API_URL);
-        setVideos(videoResponse.data.items || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchTeams();
+    fetchPlayers();
   }, []);
 
-  // Handle search functionality
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredData([...news, ...videos]); // Display all data if search query is empty
-    } else {
-      const filteredNews = news.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch(
+        "https://statsapi.mlb.com/api/v1/teams?sportId=1"
       );
-      const filteredVideos = videos.filter((item) =>
-        item.snippet.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredData([...filteredNews, ...filteredVideos]);
+      const data = await response.json();
+      setTeams(data.teams);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
     }
-  }, [searchQuery, news, videos]);
+  };
 
-  const renderItem = ({ item }) => {
-    if (item.snippet) {
-      // Video item
-      return (
-        <TouchableOpacity onPress={() => setSelectedItem(item)}>
-          <View style={styles.videoCard}>
-            <Image
-              source={{ uri: item.snippet.thumbnails.medium.url }}
-              style={styles.videoThumbnail}
-            />
-            <Text style={styles.videoTitle}>{item.snippet.title}</Text>
-            <Text style={styles.videoDescription}>
-              {item.snippet.description.slice(0, 100)}...
-            </Text>
-          </View>
-        </TouchableOpacity>
+  const fetchPlayers = async () => {
+    try {
+      const response = await fetch(
+        "https://statsapi.mlb.com/api/v1/sports/1/players?season=2025"
+      );
+      const data = await response.json();
+      setPlayers(data.people);
+    } catch (error) {
+      console.error("Error fetching players:", error);
+    }
+  };
+
+  const toggleSelection = (id, type) => {
+    if (type === "team") {
+      setSelectedTeams((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
       );
     } else {
-      // News item
-      return (
-        <TouchableOpacity onPress={() => setSelectedItem(item)}>
-          <View style={styles.newsCard}>
-            <Image
-              source={{
-                uri: item.urlToImage || "https://via.placeholder.com/150",
-              }}
-              style={styles.newsThumbnail}
-            />
-            <View style={styles.newsTextContainer}>
-              <Text style={styles.newsTitle}>{item.title}</Text>
-              <Text style={styles.newsDescription}>
-                {item.description
-                  ? item.description.slice(0, 100) + "..."
-                  : "No description available."}
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+      setSelectedPlayers((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
       );
     }
   };
 
-  const renderSelectedItem = () => {
-    if (selectedItem?.snippet) {
-      // Video details
-      return (
-        <WebView
-          source={{
-            uri: `https://www.youtube.com/embed/${selectedItem.id.videoId}`,
-          }}
-          style={styles.webview}
-        />
-      );
-    } else {
-      // News details
-      return (
-        <View style={styles.detailsContainer}>
-          <Text style={styles.title}>{selectedItem.title}</Text>
-          <Image
-            source={{
-              uri: selectedItem.urlToImage || "https://via.placeholder.com/150",
-            }}
-            style={styles.detailsImage}
-          />
-          <Text style={styles.description}>
-            {selectedItem.description || "No description available."}
-          </Text>
-          <Text style={styles.fullContent}>
-            {selectedItem.content || "No full content available."}
-          </Text>
-        </View>
-      );
+  const fetchHighlights = async () => {
+    setLoading(true);
+    const highlightsData = [];
+
+    try {
+      for (const teamId of selectedTeams) {
+        const response = await fetch(
+          `https://statsapi.mlb.com/api/v1/teams/${teamId}/news`
+        );
+        const data = await response.json();
+        highlightsData.push(...data.articles);
+      }
+
+      for (const playerId of selectedPlayers) {
+        const response = await fetch(
+          `https://statsapi.mlb.com/api/v1/people/${playerId}/stats?stats=highlight`
+        );
+        const data = await response.json();
+        highlightsData.push(...data.stats);
+      }
+
+      const filteredHighlights =
+        selectedCategory === "All"
+          ? highlightsData
+          : highlightsData.filter(
+              (highlight) => highlight.category === selectedCategory
+            );
+
+      setHighlights(filteredHighlights);
+    } catch (error) {
+      console.error("Error fetching highlights:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <Text>Loading...</Text>;
+  const categories = ["All", "Game Recaps", "Player Highlights", "Team News"];
 
   return (
-    <View style={styles.container}>
-      {selectedItem ? (
-        <>
-          {renderSelectedItem()}
+    <ScrollView style={{ backgroundColor: "#121212", padding: 16 }}>
+      <Text
+        style={{
+          color: "#FFFFFF",
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginBottom: 16,
+        }}
+      >
+        Personalized Fan Highlights
+      </Text>
+
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          marginBottom: 16,
+        }}
+      >
+        {categories.map((category) => (
           <TouchableOpacity
-            onPress={() => setSelectedItem(null)}
-            style={styles.backButton}
+            key={category}
+            onPress={() => setSelectedCategory(category)}
+            style={{
+              paddingVertical: 8,
+              paddingHorizontal: 12,
+              backgroundColor:
+                selectedCategory === category ? "#722039" : "#1F2937",
+              borderRadius: 16,
+            }}
           >
-            <Text style={styles.backButtonText}>Back to Highlights</Text>
+            <Text style={{ color: "#FFFFFF" }}>{category}</Text>
           </TouchableOpacity>
-        </>
+        ))}
+      </View>
+
+      <Text style={{ color: "#FFFFFF", fontSize: 18, fontWeight: "600" }}>
+        Select Teams:
+      </Text>
+      <ScrollView horizontal style={{ marginBottom: 16 }}>
+        {teams.map((team) => (
+          <TouchableOpacity
+            key={team.id}
+            onPress={() => toggleSelection(team.id, "team")}
+            style={{
+              margin: 8,
+              padding: 12,
+              backgroundColor: selectedTeams.includes(team.id)
+                ? "#0C4389"
+                : "#1F2937",
+              borderRadius: 8,
+              alignItems: "center",
+            }}
+          >
+            <SvgUri
+              source={{
+                uri: `https://www.mlbstatic.com/team-logos/${team.id}.svg`,
+              }}
+              width={50}
+              height={50}
+            />
+            <Text style={{ color: "#FFFFFF", marginTop: 4 }}>{team.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <Text style={{ color: "#FFFFFF", fontSize: 18, fontWeight: "600" }}>
+        Select Players:
+      </Text>
+      <ScrollView horizontal style={{ marginBottom: 16 }}>
+        {players.slice(0, 20).map((player) => (
+          <TouchableOpacity
+            key={player.id}
+            onPress={() => toggleSelection(player.id, "player")}
+            style={{
+              margin: 8,
+              padding: 12,
+              backgroundColor: selectedPlayers.includes(player.id)
+                ? "#2563EB"
+                : "#1F2937",
+              borderRadius: 8,
+              alignItems: "center",
+            }}
+          >
+            <SvgUri
+              source={{
+                uri: `https://img.mlbstatic.com/headshots/mlb/latest/128x128/${player.id}.svg`,
+              }}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginBottom: 4,
+              }}
+            />
+            <Text style={{ color: "#FFFFFF" }}>{player.fullName}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <TouchableOpacity
+        onPress={fetchHighlights}
+        style={{
+          backgroundColor: "#722039",
+          padding: 16,
+          borderRadius: 8,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#FFFFFF", fontSize: 16, fontWeight: "bold" }}>
+          Get Highlights
+        </Text>
+      </TouchableOpacity>
+
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color="#FFFFFF"
+          style={{ marginTop: 16 }}
+        />
       ) : (
-        <>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search news or highlights..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-
-          {/* Categories Section */}
-          <ScrollView horizontal style={styles.categoriesList}>
-            {categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.categoryButton}
-                onPress={() => console.log(category)}
+        <View style={{ marginTop: 16 }}>
+          {highlights.map((highlight, index) => (
+            <View
+              key={index}
+              style={{
+                backgroundColor: "#0C4389",
+                padding: 16,
+                borderRadius: 12,
+                marginBottom: 16,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.5,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            >
+              {highlight.image && (
+                <Image
+                  source={{ uri: highlight.image }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    borderRadius: 8,
+                    marginBottom: 8,
+                  }}
+                />
+              )}
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginBottom: 4,
+                }}
               >
-                <Text style={styles.categoryText}>{category}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <ScrollView horizontal style={styles.videoList}>
-            {videos.slice(0, 5).map((item) => (
-              <TouchableOpacity
-                key={item.id.videoId}
-                onPress={() => setSelectedItem(item)}
-              >
-                <View style={styles.videoCard}>
-                  <Image
-                    source={{ uri: item.snippet.thumbnails.medium.url }}
-                    style={styles.videoThumbnail}
-                  />
-                  <Text style={styles.videoTitle}>{item.snippet.title}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <Text style={styles.sectionTitle}>Baseball News</Text>
-          <FlatList
-            data={filteredData}
-            keyExtractor={(item, index) =>
-              item.id?.videoId || item.url || index.toString()
-            }
-            renderItem={renderItem}
-          />
-        </>
+                {highlight.headline || highlight.displayName}
+              </Text>
+              <Text style={{ color: "#9CA3AF" }}>
+                {highlight.summary || highlight.description}
+              </Text>
+            </View>
+          ))}
+        </View>
       )}
-    </View>
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#F4F4F4" },
-  searchBar: {
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 25,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  categoriesList: { marginBottom: 16 },
-  categoryButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginRight: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 5,
-  },
-  categoryText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  videoList: { marginBottom: 16 },
-  videoCard: {
-    marginRight: 12,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    width: 180,
-    alignItems: "center",
-    padding: 10,
-    elevation: 3,
-  },
-  videoThumbnail: {
-    width: 160,
-    height: 90,
-    borderRadius: 10,
-    marginBottom: 8,
-  },
-  videoTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "center",
-    marginBottom: 4,
-  },
-  videoDescription: {
-    fontSize: 12,
-    color: "#777",
-    textAlign: "center",
-  },
-  newsCard: {
-    flexDirection: "row",
-    marginBottom: 16,
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    alignItems: "center",
-    elevation: 3,
-  },
-  newsThumbnail: { width: 120, height: 120, borderRadius: 8, marginRight: 12 },
-  newsTextContainer: { flex: 1 },
-  newsTitle: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  newsDescription: { fontSize: 14, color: "#555" },
-  detailsContainer: { flex: 1, alignItems: "center", padding: 16 },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  detailsImage: { width: "100%", height: 200, marginBottom: 16 },
-  description: { fontSize: 16, color: "#555", textAlign: "center" },
-  fullContent: {
-    fontSize: 14,
-    color: "#333",
-    textAlign: "center",
-    marginTop: 16,
-  },
-  sectionTitle: { fontSize: 20, fontWeight: "bold", marginTop: 24 },
-  backButton: {
-    marginTop: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: "#007BFF",
-    borderRadius: 30,
-  },
-  backButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  webview: { flex: 1, marginTop: 16 },
-});
+export default highlights;

@@ -51,7 +51,7 @@ export default function PlayersSlide() {
       <Text style={styles.heading}>Top Players</Text>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#00BFFF" style={styles.loader} />
+        <ActivityIndicator size="small" color="gray" style={styles.loader} />
       ) : filteredProspects.length === 0 ? (
         <Text style={styles.noResults}>No players found.</Text>
       ) : (

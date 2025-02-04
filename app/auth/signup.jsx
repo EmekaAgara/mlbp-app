@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ScrollView,
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -22,8 +21,6 @@ export default function Signup() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("");
-  const [pickerVisible, setPickerVisible] = useState(false);
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
   const [focusedField, setFocusedField] = useState("");
@@ -38,7 +35,7 @@ export default function Signup() {
         firstName: fullName.split(" ")[0],
         lastName: fullName.split(" ").slice(1).join(" "),
         username,
-        publicMetadata: { role, phoneNumber },
+        publicMetadata: { phoneNumber },
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -58,7 +55,7 @@ export default function Signup() {
 
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
-        router.push("/(tabs)/home"); // Navigate to the tabs screen
+        router.push("/(tabs)/home");
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
@@ -76,16 +73,16 @@ export default function Signup() {
             style={styles.logo}
           />
         </View>
-        <Text style={styles.title}>Verify Your Email address</Text>
+        <Text style={styles.title}>Verify Your Email Address</Text>
         <Text style={styles.subtitle}>
-          Enter Verification code sent to your email
+          Enter the verification code sent to your email
         </Text>
         <TextInput
           style={[styles.input, focusedField === "code" && styles.inputFocused]}
           value={code}
           placeholder="Enter verification code"
-          placeholderTextColor="#000"
-          onChangeText={(text) => setCode(text)}
+          placeholderTextColor="#888"
+          onChangeText={setCode}
           onFocus={() => setFocusedField("code")}
           onBlur={() => setFocusedField("")}
           keyboardType="phone-pad"
@@ -105,7 +102,7 @@ export default function Signup() {
           style={styles.logo}
         />
       </View>
-      <Text style={styles.title}>Create Your account</Text>
+      <Text style={styles.title}>Create Your Account</Text>
       <Text style={styles.subtitle}>Fill in your details to continue</Text>
 
       <Text style={styles.label}>Full Name</Text>
@@ -115,8 +112,8 @@ export default function Signup() {
           focusedField === "fullName" && styles.inputFocused,
         ]}
         value={fullName}
-        placeholderTextColor="#000"
         placeholder="Enter your full name"
+        placeholderTextColor="#888"
         onChangeText={setFullName}
         onFocus={() => setFocusedField("fullName")}
         onBlur={() => setFocusedField("")}
@@ -129,8 +126,8 @@ export default function Signup() {
           focusedField === "username" && styles.inputFocused,
         ]}
         value={username}
-        placeholderTextColor="#000"
         placeholder="Enter a username"
+        placeholderTextColor="#888"
         onChangeText={setUsername}
         onFocus={() => setFocusedField("username")}
         onBlur={() => setFocusedField("")}
@@ -144,7 +141,7 @@ export default function Signup() {
         ]}
         value={emailAddress}
         placeholder="Enter your email"
-        placeholderTextColor="#000"
+        placeholderTextColor="#888"
         onChangeText={setEmailAddress}
         onFocus={() => setFocusedField("emailAddress")}
         onBlur={() => setFocusedField("")}
@@ -159,14 +156,14 @@ export default function Signup() {
         ]}
         value={password}
         placeholder="Enter your password"
-        placeholderTextColor="#000"
+        placeholderTextColor="#888"
         onChangeText={setPassword}
         onFocus={() => setFocusedField("password")}
         onBlur={() => setFocusedField("")}
         secureTextEntry
       />
 
-      <Text style={styles.label}>Phone Number</Text>
+      {/* <Text style={styles.label}>Phone Number</Text>
       <TextInput
         style={[
           styles.input,
@@ -174,12 +171,12 @@ export default function Signup() {
         ]}
         value={phoneNumber}
         placeholder="Enter your phone number"
-        placeholderTextColor="#000"
+        placeholderTextColor="#888"
         onChangeText={setPhoneNumber}
         onFocus={() => setFocusedField("phoneNumber")}
         onBlur={() => setFocusedField("")}
-        // keyboardType="phone-pad"
-      />
+        keyboardType="phone-pad"
+      /> */}
 
       <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
         <Text style={styles.buttonText}>Sign Up</Text>
@@ -198,63 +195,69 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
     justifyContent: "center",
+    backgroundColor: "#000000", // Dark background
   },
-  title: { fontSize: 32, fontWeight: "bold", marginBottom: 2 },
-  label: { fontSize: 14, fontWeight: "bold", marginBottom: 8 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 12, // Reduced padding to make it more compact
-    marginBottom: 12, // Reduced margin for compact spacing
-    borderRadius: 8,
-    height: 45, // Adjusted to make inputs more compact
-  },
-  inputFocused: {
-    borderColor: Colors.PRIMARY,
-  },
-  button: {
-    padding: 15,
-    borderRadius: 7,
-    backgroundColor: Colors.PRIMARY,
-    marginTop: 10,
-    alignItems: "center",
-  },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  picker: {
-    fontSize: 15,
-    backgroundColor: "#fff",
-    color: "black", // Black text for Picker items
-    height: 120, // Increased height for better scrollability
-  },
-  pickerItem: {
-    color: "black", // Ensuring Picker item text is black
-  },
-
-  // start
   logoContainer: {
     alignItems: "center",
-    // marginTop: -70,
+    marginTop: -100,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
     borderRadius: 10,
-    marginBottom: "2%",
+    marginBottom: 10,
     alignSelf: "flex-start",
   },
-
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 2,
+    color: "#fff", // White text
+  },
   subtitle: {
     fontSize: 14,
     fontWeight: "regular",
-    marginBottom: 30,
-    color: "gray",
+    marginBottom: 35,
+    color: "#888", // Light gray text
   },
-  label: { fontSize: 12, fontWeight: "bold", marginBottom: 8 },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  link: { marginTop: 15, alignItems: "center" },
-  linkText: { fontSize: 13, color: Colors.PRIMARY, fontWeight: "bold" },
-  forgotlink: { marginTop: -10, marginBottom: 5, alignItems: "flex-end" },
-  forgotlinkText: { fontSize: 12, color: Colors.PRIMARY },
+  label: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#fff", // White text
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#333", // Darker border
+    padding: 19,
+    marginBottom: 18,
+    borderRadius: 8,
+    backgroundColor: "#1e1e1e", // Dark input background
+    color: "#fff", // White text
+  },
+  inputFocused: {
+    borderColor: Colors.PRIMARY, // Highlight focused input
+  },
+  button: {
+    padding: 19,
+    borderRadius: 7,
+    backgroundColor: Colors.PRIMARY,
+    marginTop: 7,
+    width: "100%",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  link: {
+    marginTop: 15,
+    alignItems: "center",
+  },
+  linkText: {
+    fontSize: 13,
+    color: Colors.PRIMARY,
+    fontWeight: "bold",
+  },
 });

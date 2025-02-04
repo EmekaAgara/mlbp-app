@@ -11,6 +11,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { SvgUri } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import runChat from "../../services/gemini";
+import { Colors } from "@/constants/Colors";
 
 const MatchDetails = () => {
   const { game } = useLocalSearchParams();
@@ -70,9 +71,9 @@ const MatchDetails = () => {
       {/* Back Button (Top) */}
       <TouchableOpacity
         style={styles.backButtonTop}
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/(tabs)/home")}
       >
-        <Ionicons name="arrow-back-circle" size={35} color="#00BFFF" />
+        <Ionicons name="arrow-back-circle" size={35} color="#664DF3" />
       </TouchableOpacity>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -108,7 +109,7 @@ const MatchDetails = () => {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#00BFFF" />
+          <ActivityIndicator size="small" color="gray" />
         ) : (
           <>
             <View style={styles.section}>
@@ -139,7 +140,7 @@ const MatchDetails = () => {
           style={styles.bottomBackButton}
           onPress={() => router.push("/")}
         >
-          <Ionicons name="arrow-back" size={20} color="#ffffff" />
+          {/* <Ionicons name="arrow-back" size={20} color="#ffffff" /> */}
           <Text style={styles.bottomBackText}>Go Back</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -216,12 +217,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   bottomBackButton: {
-    flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#00BFFF",
-    padding: 12,
+    backgroundColor: Colors.PRIMARY,
+    padding: 16,
     borderRadius: 10,
     marginTop: 20,
+    width: "90%",
   },
   bottomBackText: {
     color: "#ffffff",

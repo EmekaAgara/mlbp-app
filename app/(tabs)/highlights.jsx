@@ -215,8 +215,8 @@ const highlights = () => {
 
       {loading ? (
         <ActivityIndicator
-          size="large"
-          color="#FFFFFF"
+          size="small"
+          color="gray"
           style={{ marginTop: 16 }}
         />
       ) : (

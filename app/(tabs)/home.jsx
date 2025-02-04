@@ -143,7 +143,7 @@ const Home = () => {
 
         <Text style={styles.heading}>Upcoming Games</Text>
         {loading ? (
-          <ActivityIndicator size="large" color="#007BFF" />
+          <ActivityIndicator size="small" color="gray" />
         ) : (
           <FlatList
             data={schedule}

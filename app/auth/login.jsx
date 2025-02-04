@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSignIn } from "@clerk/clerk-expo";
@@ -18,7 +19,6 @@ export default function Login() {
   const [identifier, setIdentifier] = useState(""); // Username or email
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [focusedField, setFocusedField] = useState("");
 
   const handleLogin = async () => {
@@ -55,7 +55,6 @@ export default function Login() {
       <Text style={styles.subtitle}>Fill in your details to continue</Text>
 
       <Text style={styles.label}>Username or Email Address</Text>
-
       <TextInput
         style={[
           styles.input,
@@ -64,12 +63,13 @@ export default function Login() {
         placeholder="Enter Username or Email"
         value={identifier}
         onChangeText={setIdentifier}
-        placeholderTextColor="#000"
+        placeholderTextColor="#888" // Light gray placeholder text
         autoCapitalize="none"
         keyboardType="default"
         onFocus={() => setFocusedField("identifier")}
         onBlur={() => setFocusedField("")}
       />
+
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={[
@@ -80,23 +80,25 @@ export default function Login() {
         onChangeText={setPassword}
         secureTextEntry
         placeholder="Enter your Password"
-        placeholderTextColor="#000"
+        placeholderTextColor="#888" // Light gray placeholder text
         onFocus={() => setFocusedField("password")}
         onBlur={() => setFocusedField("")}
       />
+
       <TouchableOpacity
         onPress={() => router.push("auth/signup")}
         style={styles.forgotlink}
       >
         <Text style={styles.forgotlinkText}>Forgot Password</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.button}
         onPress={handleLogin}
         disabled={loading}
       >
         <Text style={styles.buttonText}>
-          {loading ? "Logging In..." : "Log In"}
+          {loading ? <ActivityIndicator size="small" color="gray" /> : "Log In"}
         </Text>
       </TouchableOpacity>
 
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#000000", // Dark background
   },
   logoContainer: {
     alignItems: "center",
@@ -125,36 +127,67 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
-    marginBottom: "2%",
+    marginBottom: 20,
     alignSelf: "flex-start",
   },
-  title: { fontSize: 32, fontWeight: "bold", marginBottom: 2 },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 2,
+    color: "#fff", // White text
+  },
   subtitle: {
     fontSize: 14,
     fontWeight: "regular",
     marginBottom: 35,
-    color: "gray",
+    color: "#888", // Light gray text
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 23,
+    borderColor: "#333", // Darker border
+    padding: 22,
     marginBottom: 18,
     borderRadius: 8,
+    backgroundColor: "#1e1e1e", // Dark input background
+    color: "#fff", // White text
   },
-  inputFocused: { borderColor: Colors.PRIMARY },
+  inputFocused: {
+    borderColor: Colors.PRIMARY, // Highlight focused input
+  },
   button: {
-    padding: 23,
+    padding: 22,
     borderRadius: 7,
     backgroundColor: Colors.PRIMARY,
     marginTop: 7,
     width: "100%",
     alignItems: "center",
   },
-  label: { fontSize: 12, fontWeight: "bold", marginBottom: 8 },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  link: { marginTop: 15, alignItems: "center" },
-  linkText: { fontSize: 13, color: Colors.PRIMARY, fontWeight: "bold" },
-  forgotlink: { marginTop: -10, marginBottom: 5, alignItems: "flex-end" },
-  forgotlinkText: { fontSize: 12, color: Colors.PRIMARY },
+  label: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#fff", // White text
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  link: {
+    marginTop: 15,
+    alignItems: "center",
+  },
+  linkText: {
+    fontSize: 13,
+    color: Colors.PRIMARY,
+    fontWeight: "bold",
+  },
+  forgotlink: {
+    marginTop: -10,
+    marginBottom: 5,
+    alignItems: "flex-end",
+  },
+  forgotlinkText: {
+    fontSize: 12,
+    color: Colors.PRIMARY,
+  },
 });

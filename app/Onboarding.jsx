@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Onboarding = ({ navigation }) => {
-  const [language, setLanguage] = useState("en"); // Language code (e.g., 'en' for English, 'es' for Spanish)
+  const [language, setLanguage] = useState("en");
   const [favoriteTeam, setFavoriteTeam] = useState("");
   const [favoritePlayer, setFavoritePlayer] = useState("");
 
@@ -17,20 +23,25 @@ const Onboarding = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Set Your Preferences</Text>
+
       <Text style={styles.label}>Select Language</Text>
-      <Picker
-        selectedValue={language}
-        onValueChange={(value) => setLanguage(value)}
-        style={styles.picker}
-      >
-        <Picker.Item label="English" value="en" />
-        <Picker.Item label="Spanish" value="es" />
-        <Picker.Item label="French" value="fr" />
-      </Picker>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={language}
+          onValueChange={(value) => setLanguage(value)}
+          style={styles.picker}
+          dropdownIconColor="#fff"
+        >
+          <Picker.Item label="English" value="en" color="#fff" />
+          <Picker.Item label="Spanish" value="es" color="#fff" />
+          <Picker.Item label="French" value="fr" color="#fff" />
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Favorite Team</Text>
       <TextInput
         placeholder="Enter your favorite team"
+        placeholderTextColor="#888"
         value={favoriteTeam}
         onChangeText={setFavoriteTeam}
         style={styles.input}
@@ -39,37 +50,68 @@ const Onboarding = ({ navigation }) => {
       <Text style={styles.label}>Favorite Player</Text>
       <TextInput
         placeholder="Enter your favorite player"
+        placeholderTextColor="#888"
         value={favoritePlayer}
         onChangeText={setFavoritePlayer}
         style={styles.input}
       />
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Save & Continue"
-          onPress={savePreferences}
-          color="#6200ee"
-        />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={savePreferences}>
+        <Text style={styles.buttonText}>Save & Continue</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#f7f7f7" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, color: "#333" },
-  label: { fontSize: 16, marginVertical: 10, color: "#555" },
-  picker: { backgroundColor: "#fff", borderRadius: 8, marginBottom: 15 },
-  input: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ddd",
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#121212",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#fff",
+    textAlign: "center",
+  },
+  label: {
+    fontSize: 16,
+    marginVertical: 10,
+    color: "#bbb",
+  },
+  pickerContainer: {
+    backgroundColor: "#1e1e1e",
     borderRadius: 8,
+    marginBottom: 15,
+  },
+  picker: {
+    color: "#fff",
     padding: 10,
+  },
+  input: {
+    backgroundColor: "#1e1e1e",
+    borderWidth: 1,
+    borderColor: "#333",
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 15,
     fontSize: 16,
+    color: "#fff",
   },
-  buttonContainer: { marginTop: 20 },
+  button: {
+    backgroundColor: "#4caf50",
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });
 
 export default Onboarding;

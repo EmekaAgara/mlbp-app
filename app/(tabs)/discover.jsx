@@ -54,11 +54,7 @@ export default function Discover() {
       <View style={styles.listContainer}>
         <Text style={styles.subheading}>All Prospects</Text>
         {loading ? (
-          <ActivityIndicator
-            size="small"
-            color="#007BFF"
-            style={styles.loader}
-          />
+          <ActivityIndicator size="small" color="gray" style={styles.loader} />
         ) : (
           <FlatList
             data={filteredProspects}

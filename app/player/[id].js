@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons"; // Icons for back button
 import { fetchPlayerDetails } from "../../services/api";
 import runChat from "../../services/gemini";
+import { Colors } from "@/constants/Colors";
 
 export default function PlayerDetails() {
   const { id } = useLocalSearchParams();
@@ -72,9 +73,9 @@ export default function PlayerDetails() {
       {/* G Back Button (Top) */}
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/(tabs)/home")}
       >
-        <Ionicons name="arrow-back-circle" size={35} color="#00BFFF" />
+        <Ionicons name="arrow-back-circle" size={35} color="#664DF3" />
       </TouchableOpacity>
 
       <ScrollView
@@ -154,9 +155,8 @@ export default function PlayerDetails() {
         {/* G Back Button (Bottom) */}
         <TouchableOpacity
           style={styles.bottomBackButton}
-          onPress={() => router.push("/")}
+          onPress={() => router.push("/(tabs)/home")}
         >
-          <Ionicons name="arrow-back" size={20} color="#ffffff" />
           <Text style={styles.bottomBackText}>Go Back</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 80,
     resizeMode: "cover",
     borderWidth: 3,
-    borderColor: "#00BFFF",
+    borderColor: Colors.PRIMARY,
     shadowColor: "#00BFFF",
     shadowOpacity: 0.4,
     shadowOffset: { width: 0, height: 5 },
@@ -263,12 +263,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   bottomBackButton: {
-    flexDirection: "row",
+    // flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#00BFFF",
-    padding: 12,
+    backgroundColor: Colors.PRIMARY,
+    padding: 16,
     borderRadius: 10,
     marginTop: 20,
+    width: "90%",
   },
   bottomBackText: {
     color: "#ffffff",
